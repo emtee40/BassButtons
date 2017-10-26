@@ -175,13 +175,9 @@ function loadChannels()
 
 	// Load the XML
 	firebase.database().ref('/channels').once('value').then( function( snapshot ) {
-		alert( snapshot.val() );
+
 		var channels = snapshot.val();
-
 		var iChannels = channels.length;
-
-		alert( iChannels );
-		alert( channels );
 
 		// Fill out the local copy of our data
 		for( var i=0; i<iChannels; i++ )
@@ -304,12 +300,6 @@ function stopStream()
 	gStreamPlaying = -1;
 }
 
-function onRefresh()
-{
-//		alert( 'Refreshing channels.' );
-	loadChannels();
-}
-
 
 var config = {
 	 apiKey: "AIzaSyDlJZsCm18dsDCtqghEpo9VIjvC-j_re1E",
@@ -324,9 +314,6 @@ var config = {
 
 // Do it once to start
 loadChannels();
-
-// Now set it up to happen every 12 hours
-gRefreshInterval = setInterval( onRefresh, 6*60*60*1000 );
 
 // Release notes
 if( localStorage['release_displayed'] != '2.0.5' )
