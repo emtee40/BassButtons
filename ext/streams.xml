@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<bassbuttons ver="2.00">
+	<notifications>
+		<notification id="android128" text="Hey Android users - did you know that the Bass Buttons is now available as an Android App? Click here or get it at http://bit.ly/TZPR3P" link="http://bit.ly/TZPR3P"/>
+	</notifications>
+	<channels>
+		<channel name="Dubstep.fm" image="btn_dubstep" interval="70" stream="http://www.dubstep.fm/listen.pls" home="http://www.dubstep.fm" action="play" type="stream" postfix="/;" colour="blue"/>
+		<channel name="Party Vibe Radio" image="btn_filth" interval="80" stream="http://servers.internet-radio.com/tools/playlistgenerator" postfix="/?u=http://www.partyvibe.com:8010/listen.pls&t=.pls" home="NA" action="play" type="stream" colour="blue"/>
+		<channel name="Sub.fm" image="btn_sub" interval="80" stream="http://www.sub.fm/listen.pls" home="http://www.sub.fm" action="play" type="stream" postfix=";" colour="blue"/>
+		<channel name="Bassdrive.com" image="btn_dnb" interval="30" stream="http://www.bassdrive.com/v2/streams/BassDrive.pls" home="http://www.bassdrive.com" action="play" type="stream" postfix="/;" colour="green"/>
+		<channel name="DI.fm: Techno" image="btn_techno" interval="50" stream="http://listen.di.fm/public3/techno.pls" home="http://www.di.fm" action="play" type="stream" colour="red"/>
+		<channel name="DI.fm: House" image="btn_house" interval="45" stream="http://listen.di.fm/public3/house.pls" home="http://www.di.fm" action="play" type="stream" colour="pink"/>
+		<channel name="Hardcore Radio" image="btn_industrial" interval="47" stream="http://www.hardcoreradio.nl/hr.m3u" home="http://www.hardcoreradio.nl" action="play" type="stream" colour="black" postfix="/;"/>
+		<channel name="Soma.fm's Groove Salad" image="btn_chill" interval="90" stream="http://somafm.com/groovesalad.pls" home="http://www.somafm.com" action="play" type="stream" colour="white" postfix="/;"/>
+	</channels>
+</bassbuttons>

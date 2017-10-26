@@ -1,0 +1,30 @@
+{
+	"manifest_version": 2,
+	"name": "The Bass Buttons",
+	"version": "2.0.5",
+	"background": { "page": "background.html" },  
+	"description": "Rattling Chrome with the best in bass music!",
+	"icons": { "16" : "icon16.png",
+			   "48" : "icon48.png",
+			   "128" : "icon128.png" },
+	"browser_action":
+	{
+    	"default_icon": "icon512.png",
+    	"default_popup": "popup.html"
+  	},
+  	"permissions": [  "notifications", 
+                        "http://www.bassdrive.com/*",
+						"http://servers.internet-radio.com/*",
+						"http://www.partyvibe.com/*",
+                        "http://listen.di.fm/*",
+                        "http://www.dubstep.fm/*",
+						"http://somafm.com/*",
+						"http://www.hardcoreradio.nl/*",
+						"http://www.sub.fm/*",
+						"http://www.seriousbusiness.ca/*" ],
+	"web_accessible_resources": [
+		"icon16.png",
+		"icon48.png",
+		"icon128.png"
+	]						
+}
