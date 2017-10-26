@@ -128,12 +128,33 @@ function parseM3U( response, channel )
 function getStreamList( channel )
 {
 	// Load the XML
-	var xmlhttp = new window.XMLHttpRequest();
+	var xmlhttp = new XMLHttpRequest();
 
 	try
 	{
 		// Add a suffix to the request - to ensure it doesn't use the cached one.
-		xmlhttp.open( "GET", channel.stream, false );
+		xmlhttp.open( "GET", channel.stream, true );
+		xmlhttp.onload = function( e ) {
+			var response = xmlhttp.responseText;
+
+			alert( response );
+			var ext = channel.stream.substr(channel.stream.lastIndexOf('.') + 1).toLowerCase();
+
+			if( ext == 'pls' )
+			{
+				parsePLS( response, channel );
+			}
+			else if( ext == 'm3u' )
+			{
+				parseM3U( response, channel );
+			}
+			else
+			{
+				channel.valid = false;
+				return;
+			}
+		};
+
 		xmlhttp.setRequestHeader( 'Pragma', 'Cache-Control: no-cache');
 		xmlhttp.send(null);
 	}
@@ -143,27 +164,8 @@ function getStreamList( channel )
 		//alert(e.message);
 		return;
 	}
-
-	var response = xmlhttp.responseText;
-
-	//alert( response );
-
-	var ext = channel.stream.substr(channel.stream.lastIndexOf('.') + 1).toLowerCase();
-
-	if( ext == 'pls' )
-	{
-		parsePLS( response, channel );
-	}
-	else if( ext == 'm3u' )
-	{
-		parseM3U( response, channel );
-	}
-	else
-	{
-		channel.valid = false;
-		return;
-	}
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // loadChannels(): Downloads and parses the channels.xml file.
@@ -185,9 +187,14 @@ function loadChannels()
 			gChannels[i] = new Channel( channels[i] );
 
 			// If this is a stream, parse the list
-			if( gChannels[i].type == 'stream' )
-			{
+			if( gChannels[i].type == 'playlist' ) {
 				getStreamList( gChannels[i] );
+			}
+			else if( gChannels[i].type == 'stream' ) {
+				gChannels[i].aURLs[0] = new Stream();
+				gChannels[i].aURLs[0].url = gChannels[i].stream;
+				gChannels[i].aURLs[0].title = gChannels[i].name;
+				gChannels[i].valid = true;
 			}
 		}
 	});
@@ -232,23 +239,15 @@ function startStream( index, channel )
 {
 	try
 	{
-		if( channel.type == 'stream' )
+		if( channel.type == 'stream' || channel.type == 'playlist' )
 		{
 			stopStream();
 
 			gStreamPlaying = index;
 			gLastStreamPlayed = gStreamPlaying;
 
-			if( channel.type == 'stream' )
-			{
-				//alert( 'Starting: ' + channel.aURLs[channel.iAddressPlaying].url );
-				stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
-			}
-			else
-			{
-				stream.setAttribute('src', channel.stream );
-			}
-
+			//alert( 'Starting: ' + channel.aURLs[channel.iAddressPlaying].url );
+			stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
 			stream.onerror = onStreamError;
 
 			try
@@ -269,15 +268,7 @@ function startStream( index, channel )
 				gStreamPlaying = index;
 				gLastStreamPlayed = gStreamPlaying;
 
-				if( channel.type == 'stream' )
-				{
-					stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
-				}
-				else
-				{
-					stream.setAttribute('src', channel.stream );
-				}
-
+				stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
 				stream.load();
 			}
 		}

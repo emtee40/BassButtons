@@ -209,11 +209,8 @@ function buildButtonsPage()
 	}
 	html = html +  '</center></li>';
 
-   $("#buttonlist").append( html );
+	$("#buttonlist").append( html );
 
-	// Set up the mouse control functions
-//	$(".bassbuttons").mouseover( hoverOn );
-//	$(".bassbuttons").mouseout( hoverOff );
 	$(".btn_volume").click( onVolumeClick );
 
 	// Set up the functions for clicking list items
