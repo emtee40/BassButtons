@@ -1,20 +1,36 @@
 The Bass Buttons
 ================
 
-Author: Darryl Wright
+Original Author: Darryl Wright
 
 Creation Date: 05-16-2013
-
 Last Update: 05-16-2013
 
 History
 
-The Bass Buttons is an electronic music streaming app for Chrome and Android. It was originally built as a simple Chrome extension but the popularity went up to ~5000 users I decided to create an Android version. Since the release of the commercial version on Android, the number of users has dropped considerably which is presently being tracked in the xls file in the root folder. Apparently people don't like being solicited. :) 
+Since the Beginning
+-------------------
+The Bass Buttons is an electronic music streaming app for Chrome and Android.
+It was originally built as a simple Chrome extension but the popularity went
+up to ~20,000 users at its highest count and I decided to create an Android
+version.
 
+An Android version was eventually released to try and help fund the development
+but it made approximately $18.00 CA and the users dropped off considerably
+seemingly due to the idea of commercialization.
 
-ext - The free Chrome Extension with any changes up to and including the last release. 
+October 26th, 2017
+------------------
+Darryl made the project open source with the intention of trying to get some
+other people involved in maintaining it. There is definitely still some interest
+out there.  
 
-pkg - The initial import was simply a mirror of ext and should evolve from there. This will be the packaged Chrome app.
+*** PLEASE SEE THE ROADMAP DOCUMENT *** for the short term direction.
 
-android - The commercial Android version of the Bass Buttons.
+Contact
+-------
+By all means if you'd like to contribute -- reach out to me @punksteez on
+Twitter or darryl@punkscience.ca via old-school email.
 
+ext - The free Chrome Extension with any changes up to and including the last
+release.
