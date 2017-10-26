@@ -1,8 +1,11 @@
 {
 	"manifest_version": 2,
 	"name": "The Bass Buttons",
-	"version": "2.0.5",
-	"background": { "page": "background.html" },  
+	"version": "2.0.6",
+	"background": { "scripts": [ "jquery.min.js",
+															 "firebase.js",
+															 "background.js",
+															 "popup.js" ] },
 	"description": "Rattling Chrome with the best in bass music!",
 	"icons": { "16" : "icon16.png",
 			   "48" : "icon48.png",
@@ -12,7 +15,7 @@
     	"default_icon": "icon512.png",
     	"default_popup": "popup.html"
   	},
-  	"permissions": [  "notifications", 
+  	"permissions": [  "notifications",
                         "http://www.bassdrive.com/*",
 						"http://servers.internet-radio.com/*",
 						"http://www.partyvibe.com/*",
@@ -26,5 +29,5 @@
 		"icon16.png",
 		"icon48.png",
 		"icon128.png"
-	]						
+	]
 }

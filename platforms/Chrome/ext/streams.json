@@ -1,0 +1,37 @@
+{
+	"channels": [{
+			"name": "Dubstep.fm",
+			"image": "btn_dubstep",
+			"interval": "70",
+			"stream": "http://www.dubstep.fm/listen.pls",
+			"home": "http://www.dubstep.fm",
+			"action": "play",
+			"type": "stream",
+			"postfix": "/;",
+			"colour": "blue"
+		},
+		{
+			"name": "Party Vibe Radio",
+			"image": "btn_filth",
+			"interval": "80",
+			"stream": "http://servers.internet-radio.com/tools/playlistgenerator",
+			"postfix": "/?u=http://www.partyvibe.com:8010/listen.pls&t=.pls",
+			"home": "NA",
+			"action": "play",
+			"type": "stream",
+			"colour": "blue"
+		},
+		{
+			"name": "Bassdrive.com",
+			"image": "btn_dnb",
+			"interval": "30",
+			"stream": "http://www.bassdrive.com/v2/streams/BassDrive.pls",
+			"home": "http://www.bassdrive.com",
+			"postfix": "/;",
+			"action": "play",
+			"type": "stream",
+			"colour": "green"
+		}
+
+	]
+}

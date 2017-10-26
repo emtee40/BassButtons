@@ -1,96 +1,27 @@
-//////////////////////////////////////////////////////////////////////////
-// CLASS: Note - Used for various forms of notifications.
-//////////////////////////////////////////////////////////////////////////
-function Note( element )
-{
-	this.id = element.attributes.getNamedItem('id').value;
-	this.text = element.attributes.getNamedItem('text').value;
-	
-	if( element.attributes.getNamedItem('link') != null )
-	{
-		this.link = element.attributes.getNamedItem('link').value;
-	}
-	else
-	{
-		this.link = null;
-	}
-}
 
 //////////////////////////////////////////////////////////////////////////
 // CLASS: Channel - Represents all information around a stream
 //////////////////////////////////////////////////////////////////////////
-function Channel( element )
+function Channel( channel )
 {
-	this.name = element.attributes.getNamedItem('name').value;
-	this.imageRootName = element.attributes.getNamedItem('image').value;			
-	
-	if( element.attributes.getNamedItem('interval') != null )
-	{
-		this.interval = element.attributes.getNamedItem('interval').value;			
-	}
-	
-	if( element.attributes.getNamedItem('stream') != null )
-	{
-		this.stream = element.attributes.getNamedItem('stream').value;			
-	}
-	
-	if( element.attributes.getNamedItem('home') != null )
-	{
-		this.home = element.attributes.getNamedItem('home').value;
-	}
+	this.name = channel.name;
+	this.imageRootName = channel.image;
+	this.interval = channel.interval;
+  this.stream = channel.stream;
+	this.home = channel.home;
+	this.action = channel.action;
+	this.postfix = channel.postfix;
+	this.type = channel.type;
+	this.colour = channel.colour;
 
-	if( element.attributes.getNamedItem('action') != null )
-	{
-		this.action = element.attributes.getNamedItem('action').value;
-	}
-
-	if( element.attributes.getNamedItem('postfix') != null )
-	{
-		this.postfix = element.attributes.getNamedItem('postfix').value;
-	}
-
-	if( element.attributes.getNamedItem('type') != null )
-	{
-		this.type = element.attributes.getNamedItem('type').value;
-	}
-	else
-	{
-		this.type = 'unknown';
-	}
-
-	// Colour for the row
-	if( element.attributes.getNamedItem('colour') != null )
-	{
-		this.colour = element.attributes.getNamedItem('colour').value.toString();
-	}
-	else
-	{
-		this.colour = 'red';
-	}
-	
 	this.image = new Image( 200, 200 );
 	this.valid = true; // Weather or not we found streams for this one.
 
 	// Set up the image sources
-	this.image.src = 'gfx/' + element.attributes.getNamedItem('image').value + '.png';
-	
-	notes = element.getElementsByTagName( 'notification' );
-	
-	// If this item has some notes, store those with the channel
-	this.aNotifications = new Array();
-	
+	this.image.src = 'gfx/' + channel.image + '.png';
+
 	this.aURLs = new Array();
 	this.iAddressPlaying = 0;
-
-	if( notes.length )
-	{
-		for( var i=0; i<notes.length; i++ )
-		{
-			var note = new Note( notes[i] );
-			this.aNotifications[i] = note;
-		}
-		
-	}
 }
 
 
@@ -112,7 +43,6 @@ var gChannelSourceRemote = gChannelSourceLocal; //'http://www.seriousbusiness.ca
 //var gChannelSourceRemote = 'debug';
 
 // Set up some globals
-gGeneralNotes = new Array();
 gChannels = new Array();
 gStreams = new Array();
 
@@ -128,20 +58,20 @@ function parsePLS( response, channel )
 	if( lines[0] == "[playlist]" )
 	{
 		var entries = parseInt( lines[1].substring( 16 ) );
-		
+
 		for( var iLine=2, iStreamIndex=-1; iLine < lines.length; iLine++ )
 		{
 			// Parse the line
 			var pair = lines[iLine].split( '=' );
 			var strKey = pair[0];
 			var strValue = pair[1];
-			
+
 			if( strKey.indexOf( 'File' ) != -1 )
 			{
 				iStreamIndex++;
-				channel.aURLs[iStreamIndex] = new Stream(); 
+				channel.aURLs[iStreamIndex] = new Stream();
 				channel.aURLs[iStreamIndex].url = strValue;
-				
+
 				if( channel.postfix != null )
 				{
 					channel.aURLs[iStreamIndex].url = channel.aURLs[iStreamIndex].url + channel.postfix;
@@ -174,19 +104,19 @@ function parseM3U( response, channel )
 		{
 			continue;
 		}
-	
+
 		var strValue = lines[iLine];
 
-		channel.aURLs[iStreamIndex] = new Stream(); 
+		channel.aURLs[iStreamIndex] = new Stream();
 		channel.aURLs[iStreamIndex].url = strValue;
 		channel.aURLs[iStreamIndex].title = strValue;
-				
+
 		if( channel.postfix != null )
 		{
 			channel.aURLs[iStreamIndex].url = channel.aURLs[iStreamIndex].url + channel.postfix;
 			channel.valid = true;
 		}
-		
+
 		iStreamIndex++;
 	}
 }
@@ -213,9 +143,9 @@ function getStreamList( channel )
 		//alert(e.message);
 		return;
 	}
-	
+
 	var response = xmlhttp.responseText;
-	
+
 	//alert( response );
 
 	var ext = channel.stream.substr(channel.stream.lastIndexOf('.') + 1).toLowerCase();
@@ -242,80 +172,32 @@ function loadChannels()
 {
 	// Reset the arrays
 	gChannels = [];
-	gGeneralNotes = [];
 
 	// Load the XML
-	var xmlhttp = new window.XMLHttpRequest();
+	firebase.database().ref('/channels').once('value').then( function( snapshot ) {
+		alert( snapshot.val() );
+		var channels = snapshot.val();
 
-	// try
-	// {
-		// // Add a suffix to the request - to ensure it doesn't use the cached one.
-		// gChannelSourceRemote += '?_=' + (new Date()).getTime();		
-	
-		// xmlhttp.open("GET", gChannelSourceRemote, false);
-		// xmlhttp.setRequestHeader( 'Pragma', 'Cache-Control: no-cache');
-		// xmlhttp.send(null);
-	// }
-	// catch( e )
-	// {
-		// We failed to get a config file from the network, so load it locally.
-//		xmlhttp.open("GET", gChannelSourceLocal, false);
-//		xmlhttp.send(null);
-//	}
+		var iChannels = channels.length;
 
-	try
-	{
-		xmlhttp.open("GET", gChannelSourceLocal, false);
-		xmlhttp.send(null);
-	}
-	catch( e )
-	{
-	}
-	
-	if( xmlhttp.status == 404 )
-	{
-		// We failed to get a config file from the network, so load it locally.
-		xmlhttp.open("GET", gChannelSourceLocal, false);
-		xmlhttp.send(null);
-	}
-	
-	var parser = new DOMParser();
-    xml = parser.parseFromString( xmlhttp.responseText, "text/xml" );
+		alert( iChannels );
+		alert( channels );
 
-	var xmlDoc = xml.documentElement;
-
-	// Get the general notifications
-	var notes = xmlDoc.getElementsByTagName( "notifications" );
-
-	// We only want the general ones here. 
-	if( notes.length > 0 )
-	{
-		var generalnotes = notes[0].getElementsByTagName( "notification" ); 
-
-		for( var i=0; i<generalnotes.length; i++ )
+		// Fill out the local copy of our data
+		for( var i=0; i<iChannels; i++ )
 		{
-			gGeneralNotes[i] = new Note( generalnotes[i] );
-		}
-	}
+			gChannels[i] = new Channel( channels[i] );
 
-	// Get the channels
-	var x = xmlDoc.getElementsByTagName( "channel" );
-	var iChannels = x.length;
-
-	// Fill out the local copy of our data
-	for( var i=0; i<x.length; i++ )
-	{
-		gChannels[i] = new Channel( x[i] );
-		
-		// If this is a stream, parse the list
-		if( gChannels[i].type == 'stream' )
-		{
-			getStreamList( gChannels[i] );  
+			// If this is a stream, parse the list
+			if( gChannels[i].type == 'stream' )
+			{
+				getStreamList( gChannels[i] );
+			}
 		}
-	}
+	});
 }
 
-						
+
 function getPlayingStream()
 {
 	return gStreamPlaying;
@@ -337,7 +219,7 @@ function onStreamError()
 	if( gChannels[gStreamPlaying].iAddressPlaying+1 == gChannels[gStreamPlaying].aURLs.length )
 	{
 		alert( 'Sorry. Failed to play this stream - the station may be down. Please try again later.\n' + gChannels[gStreamPlaying].aURLs[gChannels[gStreamPlaying].iAddressPlaying].url );
-		gChannels[gStreamPlaying].iAddressPlaying = 0;  
+		gChannels[gStreamPlaying].iAddressPlaying = 0;
 		stopStream();
 	}
 	else
@@ -345,7 +227,7 @@ function onStreamError()
 	   gChannels[gStreamPlaying].iAddressPlaying++;
 	   //alert( 'Trying ' + gChannels[gStreamPlaying].aURLs[gChannels[gStreamPlaying].iAddressPlaying].url );
 
-		startStream( gStreamPlaying, gChannels[gStreamPlaying] ); 
+		startStream( gStreamPlaying, gChannels[gStreamPlaying] );
 	}
 }
 
@@ -358,21 +240,21 @@ function startStream( index, channel )
 		{
 			stopStream();
 
-			gStreamPlaying = index; 
-			gLastStreamPlayed = gStreamPlaying; 
+			gStreamPlaying = index;
+			gLastStreamPlayed = gStreamPlaying;
 
 			if( channel.type == 'stream' )
 			{
 				//alert( 'Starting: ' + channel.aURLs[channel.iAddressPlaying].url );
-				stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );    
+				stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
 			}
 			else
 			{
-				stream.setAttribute('src', channel.stream );    
+				stream.setAttribute('src', channel.stream );
 			}
 
 			stream.onerror = onStreamError;
-			
+
 			try
 			{
 				stream.load();
@@ -382,22 +264,22 @@ function startStream( index, channel )
 				alert( e.message + '\nSorry. The stream failed to play -- the station may have gone down. Please try again later.\nWould love it if you would report this to darryl@seriousbusiness.ca\n' + gChannels[gStreamPlaying].aURLs[gChannels[gStreamPlaying].iAddressPlaying].url );
 			}
 		}
-		else 
+		else
 		{
 			if( index != gLastStreamPlayed )
 			{
 				stopStream();
 
-				gStreamPlaying = index;     
-				gLastStreamPlayed = gStreamPlaying; 
+				gStreamPlaying = index;
+				gLastStreamPlayed = gStreamPlaying;
 
 				if( channel.type == 'stream' )
 				{
-					stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );    
+					stream.setAttribute('src', channel.aURLs[channel.iAddressPlaying].url );
 				}
 				else
 				{
-					stream.setAttribute('src', channel.stream );    
+					stream.setAttribute('src', channel.stream );
 				}
 
 				stream.load();
@@ -412,13 +294,13 @@ function startStream( index, channel )
 	}
 }
 
-function stopStream() 
+function stopStream()
 {
 	if( gStreamPlaying != -1 )
 	{
 		stream.pause();
 	}
-	
+
 	gStreamPlaying = -1;
 }
 
@@ -427,6 +309,18 @@ function onRefresh()
 //		alert( 'Refreshing channels.' );
 	loadChannels();
 }
+
+
+var config = {
+	 apiKey: "AIzaSyDlJZsCm18dsDCtqghEpo9VIjvC-j_re1E",
+	 authDomain: "bassbuttons.firebaseapp.com",
+	 databaseURL: "https://bassbuttons.firebaseio.com",
+	 projectId: "bassbuttons",
+	 storageBucket: "bassbuttons.appspot.com",
+	 messagingSenderId: "963912646493"
+ };
+
+ firebase.initializeApp(config);
 
 // Do it once to start
 loadChannels();
@@ -440,5 +334,3 @@ if( localStorage['release_displayed'] != '2.0.5' )
 	chrome.tabs.create( {'url': "release_notes.html" } ); // Need to figure out how to make this dynamic
 	localStorage['release_displayed'] = '2.0.5';
 }
-
-

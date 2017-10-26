@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
-<bassbuttons ver="2.00">
-	<notifications>
-		<notification id="android128" text="Hey Android users - did you know that the Bass Buttons is now available as an Android App? Click here or get it at http://bit.ly/TZPR3P" link="http://bit.ly/TZPR3P"/>
-	</notifications>
+<bassbuttons ver="2.60">
 	<channels>
 		<channel name="Dubstep.fm" image="btn_dubstep" interval="70" stream="http://www.dubstep.fm/listen.pls" home="http://www.dubstep.fm" action="play" type="stream" postfix="/;" colour="blue"/>
 		<channel name="Party Vibe Radio" image="btn_filth" interval="80" stream="http://servers.internet-radio.com/tools/playlistgenerator" postfix="/?u=http://www.partyvibe.com:8010/listen.pls&t=.pls" home="NA" action="play" type="stream" colour="blue"/>

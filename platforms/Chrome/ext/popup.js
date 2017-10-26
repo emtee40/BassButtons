@@ -10,52 +10,18 @@ var dir = 0;
 var gInterval;
 
 //////////////////////////////////////////////////////////////////////////
-// sendNotification(): Pops up a user notification message 
+// sendNotification(): Pops up a user notification message
 //////////////////////////////////////////////////////////////////////////
 function sendNotification( channel, msg, link )
 {
-	// Create a simple text notification:
-	var notification = webkitNotifications.createNotification( 'icon128.png', channel, msg );
-
-	// Then show the notification.
-	notification.show();			
-}
-
-
-function onLinkClick()
-{
-	chrome.tabs.create( {'url': "http://bit.ly/TZPR3P" } ); // Need to figure out how to make this dynamic
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// broadcastNotes(): Broadcast general notifications not specific to a 
-// channel 
-//////////////////////////////////////////////////////////////////////////
-function broadcastNotes()
-{
-	if( bgPage == null )
-	{
-		return;
-	}
-
-	for( var i=0; i<bgPage.gGeneralNotes.length; i++ )
-	{
-		if( localStorage[bgPage.gGeneralNotes[i].id] != 'sent' )
-		{
-			// Create a simple text notification:
-			var notification = webkitNotifications.createNotification( 'icon128.png', 'The Bass Buttons for Android', bgPage.gGeneralNotes[i].text );
-	
-			if(	bgPage.gGeneralNotes[i].link != null )
-            {
-                notification.onclick = onLinkClick;
-            }
-	
-			// Then show the notification.
-			notification.show();			
-			
-			localStorage[bgPage.gGeneralNotes[i].id] = 'sent';
-		}
+	if (Notification.permission !== "granted")
+		Notification.requestPermission();
+ 	else {
+			var notification = new Notification('Notification title', {
+ 				icon: 'icon128.png',
+ 				body: msg,
+				title: channel
+ 		});
 	}
 }
 
@@ -68,7 +34,7 @@ function onTimer()
 	if( dir == 0 )
 	{
 		fOpacity = fOpacity - 0.05;
-		
+
 		if( fOpacity <= giOpacityMin )
 		{
 			dir = 1;
@@ -83,39 +49,15 @@ function onTimer()
 			dir = 0;
 		}
 	}
-	
+
 	var strImageName = 'image' + bgPage.getPlayingStream();
 	var image = document.getElementById( strImageName );
 	image.style.opacity = fOpacity;
 }
 
 
-// //////////////////////////////////////////////////////////////////////////
-// // hoverOn(): Called by a channel when it's being hovered over. 
-// //////////////////////////////////////////////////////////////////////////
-// function hoverOn()
-// {
-	// alert( "hoverOn" );
-	// var index = this.id;
-	// var image = document.getElementById( 'image' + index );
-	// image.src = image.src.replace( '.png', '_hover.png' );
-// }
-
-
-// //////////////////////////////////////////////////////////////////////////
-// // hoverOff(): Called once when you move off a channel 
-// //////////////////////////////////////////////////////////////////////////
-// function hoverOff()
-// {
-	// alert( "hoverOff" );
-	// var index = this.id;
-	// var image = document.getElementById( 'image' + index );
-	// image.src = image.src.replace( '_hover.png', '.png' );
-// }
-
-
 //////////////////////////////////////////////////////////////////////////
-// play(): Play a channel 
+// play(): Play a channel
 //////////////////////////////////////////////////////////////////////////
 function play(index)
 {
@@ -133,7 +75,7 @@ function play(index)
 
 	bgPage.startStream( index, bgPage.gChannels[index] );
 	gInterval = setInterval( onTimer, bgPage.gChannels[index].interval );
-	
+
 	// Display any notifications once
 	if( bgPage.gChannels[index].aNotifications.length > 0 )
 	{
@@ -182,7 +124,7 @@ function onSelect()
 		clearInterval( gInterval );
 	}
 
-	// If we're stopping the one we were playing, our work is done here. 
+	// If we're stopping the one we were playing, our work is done here.
 	if( index == indexPlaying )
 	{
 		return;
@@ -193,21 +135,6 @@ function onSelect()
 		gInterval = setInterval( onTimer, bgPage.gChannels[index].interval );
 	}
 
-	// Display any notifications once
-	if( bgPage.gChannels[index].aNotifications.length > 0 )
-	{
-		for( var i=0; i<bgPage.gChannels[index].aNotifications.length; i++ )
-		{
-			// Only notify the user once that there can be delays.
-			var id = bgPage.gChannels[index].aNotifications[i].id;
-
-			if( localStorage[id] != "sent" )
-			{
-				sendNotification( bgPage.gChannels[index].name, bgPage.gChannels[index].aNotifications[i].text );
-				localStorage[id] = "sent";
-			}
-		}
-	}
 }
 
 
@@ -219,7 +146,7 @@ function onVolumeClick( strId )
 	{
 		strLevel = strId;
 	}
-	
+
 	if( strLevel == "" )
 	{
 		strLevel = "10";
@@ -241,7 +168,7 @@ function onVolumeClick( strId )
 
 		images[i-1].src = strLED;
 	}
-	
+
 	// Normalize the volume
 	var vol = (iClicked-1)/(giVolumeBlocks-1)
 	bgPage.setVolume( vol )
@@ -252,7 +179,7 @@ function buildButtonsPage()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Dynamically build the channel list based on contents downloaded from
-	// channels.xml 
+	// channels.xml
 	//////////////////////////////////////////////////////////////////////////
 	var html = '';
 
@@ -270,7 +197,7 @@ function buildButtonsPage()
 		html = html + '<img id=\"image' + i + '\" height=\"70px\" padding=\"0\" margin=\"0\" src=\"' + bgPage.gChannels[i].image.src + '\"></a>';
 		html = html +  '</li>';
 	}
-	
+
 	// Add the volume buttons
 	html = html + '<li><center>';
 	var iLeft = 8;
@@ -281,9 +208,9 @@ function buildButtonsPage()
 		html = html + '<img class="btn_volume" id=\"' + i + '\" src=\"gfx/LED_off.png\" style=\"width:7px; padding=\"2px\" height:20px;\"/></a>';
 	}
 	html = html +  '</center></li>';
-   
+
    $("#buttonlist").append( html );
-   
+
 	// Set up the mouse control functions
 //	$(".bassbuttons").mouseover( hoverOn );
 //	$(".bassbuttons").mouseout( hoverOff );
@@ -310,12 +237,38 @@ function buildButtonsPage()
 }
 
 
+// function notifyTest() {
+// 	if (Notification.permission !== "granted")
+// 		Notification.requestPermission();
+// 	else {
+// 		var notification = new Notification('Notification title', {
+// 			icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+// 			body: "This runs every time!",
+// 		});
+//
+// 		notification.onclick = function () {
+// 			window.open("http://stackoverflow.com/a/13328397/1269037");
+// 		};
+// 	}
+// }
+
+
 //////////////////////////////////////////////////////////////////////////
-// START HERE 
+// START HERE
 //////////////////////////////////////////////////////////////////////////
 $(document).ready(function()
 {
-	broadcastNotes();
+	// request permission on page load
+	document.addEventListener('DOMContentLoaded', function () {
+	  if (!Notification) {
+	    alert('Desktop notifications not available in your browser. Try Chromium.');
+	    return;
+	  }
+
+	  if (Notification.permission !== "granted")
+	    Notification.requestPermission();
+	});
+
 	buildButtonsPage();
 
 	// if we're playing a stream, make sure the throb comes back on
