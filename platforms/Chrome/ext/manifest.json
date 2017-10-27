@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "The Bass Buttons",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"background": { "scripts": [ "jquery.min.js",
 								 "firebase.js",
 								 "background.js" ] },

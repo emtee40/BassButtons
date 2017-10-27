@@ -22,6 +22,7 @@ function Channel( channel )
 
 	this.aURLs = new Array();
 	this.iAddressPlaying = 0;
+	this.ext = channel.ext;
 }
 
 
@@ -55,7 +56,10 @@ function parsePLS( response, channel )
 {
 	var lines = response.split( '\n' );
 
-	if( lines[0] == "[playlist]" )
+	// Get rid of extraneous linebreaks etc.
+	var type = lines[0].replace(/(\r\n|\n|\r)/gm,"");
+
+	if( type == "[playlist]" )
 	{
 		var entries = parseInt( lines[1].substring( 16 ) );
 
@@ -137,8 +141,8 @@ function getStreamList( channel )
 		xmlhttp.onload = function( e ) {
 			var response = xmlhttp.responseText;
 
-			alert( response );
-			var ext = channel.stream.substr(channel.stream.lastIndexOf('.') + 1).toLowerCase();
+			//alert( response );
+			var ext = channel.ext;
 
 			if( ext == 'pls' )
 			{
